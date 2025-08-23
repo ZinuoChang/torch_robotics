@@ -50,6 +50,25 @@ class PlanningVisualizer:
             self.robot.render_trajectories(ax, trajs=traj_best.unsqueeze(0), **kwargs)
 
         return fig, ax
+    
+    def render_robot_trajectories_w_grad(self, fig=None, ax=None, render_planner=False, trajs=None, traj_best=None, gradient=None, **kwargs):
+        if fig is None or ax is None:
+            fig, ax = create_fig_and_axes(dim=self.env.dim)
+
+        if render_planner:
+            self.planner.render(ax)
+        self.env.render(ax)
+        if trajs is not None:
+            _, trajs_coll_idxs, _, trajs_free_idxs, _ = self.task.get_trajs_collision_and_free(trajs, return_indices=True)
+            kwargs['colors'] = []
+            for i in range(len(trajs_coll_idxs) + len(trajs_free_idxs)):
+                kwargs['colors'].append(self.colors['collision'] if i in trajs_coll_idxs else self.colors['free'])
+        self.robot.render_trajectories(ax, trajs=trajs, grad=gradient,**kwargs)
+        if traj_best is not None:
+            kwargs['colors'] = ['blue']
+            self.robot.render_trajectories(ax, trajs=traj_best.unsqueeze(0), **kwargs)
+
+        return fig, ax
 
     def animate_robot_trajectories(
             self, trajs=None, start_state=None, goal_state=None,

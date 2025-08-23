@@ -63,7 +63,7 @@ class RobotPointMass(RobotBase):
 
     def render_trajectories(
             self, ax, trajs=None, start_state=None, goal_state=None, colors=['blue'],
-            linestyle='solid', **kwargs):
+            linestyle='solid', grad=None, quiver_kwargs={}, **kwargs):
         if trajs is not None:
             trajs_pos = self.get_position(trajs)
             trajs_np = to_numpy(trajs_pos)
@@ -85,6 +85,41 @@ class RobotPointMass(RobotBase):
                 for segment, color in zip(segments, colors):
                     colors_scatter.extend([color]*segment.shape[0])
                 ax.scatter(points[:, 0], points[:, 1], color=colors_scatter, s=2**2)
+        if grad is not None: 
+            grad_pos = self.get_position(grad)
+            grad_np = to_numpy(grad_pos)   # (B, H, D)
+            assert grad_np.shape == trajs_np.shape, f"gradient shape {grad_np.shape} must equal trajs shape {trajs_np.shape}"
+            B, H, D = grad_np.shape
+            
+            scale = 10.0
+            grad_scaled = grad_np * scale
+            arrow_colors = colors_scatter
+
+            if D == 3:
+                X = trajs_np[..., 0].reshape(-1)
+                Y = trajs_np[..., 1].reshape(-1)
+                Z = trajs_np[..., 2].reshape(-1)
+                U = grad_scaled[..., 0].reshape(-1)
+                V = grad_scaled[..., 1].reshape(-1)
+                W = grad_scaled[..., 2].reshape(-1)
+                ax.quiver(
+                    X, Y, Z, U, V, W,
+                    length=1.0, normalize=False,
+                    color=arrow_colors,
+                    **quiver_kwargs
+                )
+            else:
+                X = trajs_np[..., 0].reshape(-1)
+                Y = trajs_np[..., 1].reshape(-1)
+                U = grad_scaled[..., 0].reshape(-1)
+                V = grad_scaled[..., 1].reshape(-1)
+                ax.quiver(
+                    X, Y, U, V,
+                    angles='xy', scale_units='xy', scale=1.0,
+                    color=arrow_colors,
+                    **quiver_kwargs
+                )
+
         if start_state is not None:
             start_state_np = to_numpy(start_state)
             if len(start_state_np) == 3:
