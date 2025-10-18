@@ -64,9 +64,9 @@ class DistanceField(ABC):
         pass
 
 
-def interpolate_points_v1(points, num_interpolated_points):
+def interpolate_points_v1(points, num_interpolated_points, mode='linear'):
     # https://github.com/SamsungLabs/RAMP/blob/c3bd23b2c296c94cdd80d6575390fd96c4f83d83/mppi_planning/cost/collision_cost.py#L89
-    points = Functional.interpolate(points.transpose(-2, -1), size=num_interpolated_points, mode='linear', align_corners=True).transpose(-2, -1)
+    points = Functional.interpolate(points.transpose(-2, -1), size=num_interpolated_points, mode=mode, align_corners=None if mode == 'area' else True).transpose(-2, -1)
     return points
 
 

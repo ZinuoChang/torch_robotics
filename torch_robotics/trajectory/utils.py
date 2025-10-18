@@ -41,7 +41,7 @@ def interpolate_traj_via_points(trajs, num_interpolation=10):
         alpha = alpha.view((1,) * len(traj_dim[:-1]) + (-1, 1))
         interpolated_trajs = trajs[..., 0:traj_dim[-2] - 1, None, :] * alpha + \
                              trajs[..., 1:traj_dim[-2], None, :] * (1 - alpha)
-        interpolated_trajs = interpolated_trajs.view(traj_dim[:-2] + (-1, D))
+        interpolated_trajs = interpolated_trajs.reshape(traj_dim[:-2] + (-1, D))
     else:
         interpolated_trajs = trajs
     return interpolated_trajs
