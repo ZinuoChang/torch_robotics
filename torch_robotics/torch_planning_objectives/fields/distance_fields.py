@@ -83,6 +83,66 @@ def interpolate_points_v2(points, num_interpolate, link_interpolate_range):
     return points
 
 
+def catmull_rom_centripetal(P, M, alpha=0.5, eps=1e-6):
+    """
+    Centripetal Catmull-Rom Spline Interpolation (Batch version)
+    Args:
+        P: Tensor of shape (B, N, D)
+           B = batch size, N = number of input points, D = dimension
+        M: int, number of output points (after interpolation)
+        alpha: float, parameterization factor. 
+               alpha = 0.5 gives Centripetal Catmull-Rom (recommended)
+        eps: float, small epsilon for numerical stability
+    Returns:
+        Tensor of shape (B, M, D) with interpolated trajectories.
+    """
+    B, N, D = P.shape
+    device = P.device
+
+    # Compute chordal parameter t using distances between control points
+    diff = P[:, 1:, :] - P[:, :-1, :]
+    dist = torch.sum(diff * diff, dim=2).sqrt()  # (B, N-1)
+    t = torch.zeros(B, N, device=device)
+    t[:, 1:] = torch.cumsum(dist**alpha + eps, dim=1)
+
+    # Generate target query parameters in the same range
+    t_new = torch.linspace(0, 1, M, device=device).unsqueeze(0) * t[:, -1:].clamp(min=eps)
+
+    # For each t_new, find the segment index i such that t[i] <= t_new < t[i+1]
+    idx = torch.searchsorted(t, t_new, right=True) - 1
+    idx = idx.clamp(1, N - 3)
+
+    # Helper function to gather batch points
+    def gather_points(P, idx):
+        idx_expand = idx.unsqueeze(-1).expand(-1, -1, P.size(-1))
+        return torch.gather(P, 1, idx_expand)
+
+    # Collect local control points P_{i-1}, P_i, P_{i+1}, P_{i+2}
+    P0 = gather_points(P, idx - 1)
+    P1 = gather_points(P, idx)
+    P2 = gather_points(P, idx + 1)
+    P3 = gather_points(P, idx + 2)
+
+    # Compute segment local parameter s in [0,1]
+    t_i = gather_points(t.unsqueeze(-1), idx).squeeze(-1)
+    t_ip1 = gather_points(t.unsqueeze(-1), idx + 1).squeeze(-1)
+    s = ((t_new - t_i) / (t_ip1 - t_i + eps)).unsqueeze(-1)
+
+    # Cubic Catmull–Rom spline polynomial
+    a = 2 * P1
+    b = P2 - P0
+    c = 2 * P0 - 5 * P1 + 4 * P2 - P3
+    d = -P0 + 3 * P1 - 3 * P2 + P3
+
+    result = 0.5 * (a + b*s + c*s**2 + d*s**3)
+
+    # Enforce boundary consistency
+    result[:, 0, :] = P[:, 0, :]
+    result[:, -1, :] = P[:, -1, :]
+
+    return result
+
+
 class EmbodimentDistanceFieldBase(DistanceField):
 
     def __init__(self,
