@@ -143,6 +143,55 @@ def catmull_rom_centripetal(P, M, alpha=0.5, eps=1e-6):
     return result
 
 
+def pchip_interpolate(x, M):
+    """
+    PCHIP interpolation for trajectories.
+    Args:
+        x: [B, N, D] original trajectory
+        M: target length
+    Returns:
+        [B, M, D] interpolated trajectory
+    """
+    B, N, D = x.shape
+    device = x.device
+
+    # Time grid
+    t = torch.linspace(0, 1, N, device=device)
+    t_new = torch.linspace(0, 1, M, device=device)
+
+    # Compute slopes with shape-preserving method
+    h = t[1:] - t[:-1]
+    delta = (x[:, 1:, :] - x[:, :-1, :]) / h.view(1, -1, 1)
+
+    m = torch.zeros((B, N, D), device=device)
+    m[:, 1:-1, :] = (delta[:, :-1, :] + delta[:, 1:, :]) / 2
+
+    m[:, 0, :] = delta[:, 0, :]
+    m[:, -1, :] = delta[:, -1, :]
+
+    # Now interpolate
+    result = torch.zeros((B, M, D), device=device)
+    for i in range(N - 1):
+        mask = (t_new >= t[i]) & (t_new <= t[i + 1])
+        s = (t_new[mask] - t[i]) / h[i]
+        s = s.view(1, -1, 1)
+
+        h00 = (2 * s ** 3 - 3 * s ** 2 + 1)
+        h10 = (s ** 3 - 2 * s ** 2 + s)
+        h01 = (-2 * s ** 3 + 3 * s ** 2)
+        h11 = (s ** 3 - s ** 2)
+
+        result[:, mask, :] = (
+            h00 * x[:, i:i + 1, :]
+            + h10 * h[i] * m[:, i:i + 1, :]
+            + h01 * x[:, i + 1:i + 2, :]
+            + h11 * h[i] * m[:, i + 1:i + 2, :]
+        )
+
+    return result
+
+
+
 class EmbodimentDistanceFieldBase(DistanceField):
 
     def __init__(self,
