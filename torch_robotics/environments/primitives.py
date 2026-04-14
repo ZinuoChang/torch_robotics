@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt, transforms
 from matplotlib.patches import FancyBboxPatch, BoxStyle
 from torch.autograd.functional import jacobian
 
-from torch_robotics.torch_kinematics_tree.geometrics.quaternion import q_to_rotation_matrix
+from torch_robotics.torch_kinematics_tree.geometrics.quaternion import q_to_rotation_matrix, rotation_matrix_to_q
 from torch_robotics.torch_kinematics_tree.geometrics.utils import transform_point, rotate_point
 from torch_robotics.torch_utils.torch_utils import DEFAULT_TENSOR_ARGS, to_torch, to_numpy, tensor_linspace_v1
 from torch_robotics.visualizers.planning_visualizer import create_fig_and_axes
@@ -542,8 +542,17 @@ class ObjectField(PrimitiveShapeField):
             assert len(pos) == 3
             self.pos = to_torch(pos, **self.tensor_args)
         if ori is not None:
+            if ori.shape == (3, 3):
+                ori_torch = to_torch(ori, **self.tensor_args)
+                ori = rotation_matrix_to_q(ori_torch).squeeze(0)  # wxyz, shape (4,)
             assert len(ori) == 4, "quaternion wxyz"
             self.ori = to_torch(ori, **self.tensor_args)
+
+    def get_transformation_matrix(self):
+        H = torch.eye(4, **self.tensor_args)
+        H[:3, :3] = q_to_rotation_matrix(self.ori)
+        H[:3, 3] = self.pos
+        return H
 
     def join_primitives(self):
         raise NotImplementedError
