@@ -90,10 +90,15 @@ class GridMapSDF:
         :param X: Tensor of trajectories, of shape (batch_size, horizon, task_spaces, position_dim)
         :return: collision cost on the trajectories
         """
-        X_in_map = ((X-self.limits[0])/self.map_dim * self.cmap_dim).floor().type(torch.LongTensor)
+        # Indices are computed on X's device. (They used to be cast to a CPU LongTensor, which copied every query
+        # point GPU -> CPU -> GPU on each call; results are identical.)
+        X_in_map = ((X-self.limits[0])/self.map_dim * self.cmap_dim).floor().long()
 
         # Project out-of-bounds locations to axis
-        max_idx = torch.tensor(self.points_for_sdf.shape[:-1])-1
+        max_idx = getattr(self, '_max_idx', None)
+        if max_idx is None or max_idx.device != X_in_map.device:
+            max_idx = torch.tensor(self.points_for_sdf.shape[:-1], device=X_in_map.device) - 1
+            self._max_idx = max_idx
         X_in_map = X_in_map.clamp(torch.zeros_like(max_idx), max_idx)
 
         # SDFs and gradients

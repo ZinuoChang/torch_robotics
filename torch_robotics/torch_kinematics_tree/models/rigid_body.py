@@ -61,6 +61,7 @@ from torch_robotics.torch_kinematics_tree.geometrics.spatial_vector import (
     x_rot,
 )
 from torch_robotics.torch_kinematics_tree.geometrics.frame import Frame
+from torch_robotics.torch_kinematics_tree.geometrics.utils import bmm3
 
 
 class DifferentiableRigidBody(torch.nn.Module):
@@ -168,7 +169,7 @@ class DifferentiableRigidBody(torch.nn.Module):
                     rot = z_rot(torch.sign(self.joint_axis[0, 2]) * q_clamped)
 
                 joint_pose = Frame(
-                    rot=self.fixed_rotation.repeat(batch_size, 1, 1) @ rot,
+                    rot=bmm3(self.fixed_rotation.expand(batch_size, 3, 3), rot),
                     trans=self.trans.repeat(batch_size, 1),
                     device=self._device,
                 )
@@ -235,7 +236,7 @@ class DifferentiableRigidBody(torch.nn.Module):
             self.joint_pose.set_translation(
                 self.trans.repeat(batch_size, 1)
             )
-            self.joint_pose.set_rotation(self.fixed_rotation.repeat(batch_size, 1, 1) @ rot)
+            self.joint_pose.set_rotation(bmm3(self.fixed_rotation.expand(batch_size, 3, 3), rot))
         elif self.joint_type == 'prismatic':
             trans = self.joint_axis * q_clamped
             self.joint_pose.set_translation(

@@ -64,10 +64,44 @@ class DistanceField(ABC):
         pass
 
 
+_LINEAR_INTERP_WEIGHTS = {}
+
+
+def _linear_interp_weights(n_in, n_out, device, dtype):
+    # (n_out, n_in) matrix equal to F.interpolate(mode='linear', align_corners=True).
+    key = (n_in, n_out, device, dtype)
+    if key not in _LINEAR_INTERP_WEIGHTS:
+        # Mirror ATen's upsample_linear1d arithmetic (align_corners=True) in the working dtype:
+        # scale = (in-1)/(out-1), src = scale*i, idx = floor(src), lambda = src - idx.
+        cdtype = dtype if dtype in (torch.float32, torch.float64) else torch.float32
+        if n_out > 1:
+            scale = torch.tensor(n_in - 1, dtype=cdtype) / torch.tensor(n_out - 1, dtype=cdtype)
+        else:
+            scale = torch.tensor(0., dtype=cdtype)
+        src = scale * torch.arange(n_out, dtype=cdtype)
+        j = src.floor().long().clamp(max=max(n_in - 2, 0))
+        lam = (src - j.to(cdtype)).clamp(0, 1)
+        w = torch.zeros(n_out, n_in, dtype=cdtype)
+        rows = torch.arange(n_out)
+        w[rows, j] += 1 - lam
+        if n_in > 1:
+            w[rows, j + 1] += lam
+        _LINEAR_INTERP_WEIGHTS[key] = w.to(device=device, dtype=dtype)
+    return _LINEAR_INTERP_WEIGHTS[key]
+
+
 def interpolate_points_v1(points, num_interpolated_points, mode='linear'):
     # https://github.com/SamsungLabs/RAMP/blob/c3bd23b2c296c94cdd80d6575390fd96c4f83d83/mppi_planning/cost/collision_cost.py#L89
-    points = Functional.interpolate(points.transpose(-2, -1), size=num_interpolated_points, mode=mode, align_corners=None if mode == 'area' else True).transpose(-2, -1)
-    return points
+    if mode != 'linear':
+        return Functional.interpolate(points.transpose(-2, -1), size=num_interpolated_points, mode=mode,
+                                      align_corners=None if mode == 'area' else True).transpose(-2, -1)
+    # Linear mode: same result as F.interpolate(align_corners=True) along dim -2, written as one dense
+    # matmul, because upsample_linear1d's backward (atomic adds) is very slow for large batches.
+    n_in = points.shape[-2]
+    w = _linear_interp_weights(n_in, num_interpolated_points, points.device, points.dtype)
+    flat = points.transpose(-2, -1).reshape(-1, n_in)
+    out = flat @ w.T
+    return out.reshape(*points.shape[:-2], points.shape[-1], num_interpolated_points).transpose(-2, -1)
 
 
 # Old implementation
@@ -275,7 +309,14 @@ class EmbodimentDistanceFieldBase(DistanceField):
         else:
             link_pos_robot = link_pos
 
-        link_pos_robot = link_pos_robot[..., self.link_idxs_for_collision_checking, :]
+        link_idxs = getattr(self, '_link_idxs_cache', None)
+        if link_idxs is None or link_idxs.device != link_pos_robot.device:
+            # cached device index tensor: indexing with a python list re-creates it on the CPU and copies it to the
+            # GPU on every call
+            link_idxs = torch.as_tensor(self.link_idxs_for_collision_checking, dtype=torch.long,
+                                        device=link_pos_robot.device)
+            self._link_idxs_cache = link_idxs
+        link_pos_robot = link_pos_robot[..., link_idxs, :]
         if self.interpolate_link_pos:
             # select the robot links used for collision checking
             link_pos = interpolate_points_v1(link_pos_robot, self.num_interpolated_points)
@@ -332,14 +373,15 @@ class CollisionSelfField(EmbodimentDistanceFieldBase):
             # if there is only one link, the self distance is very large
             # implementation guarantees gradient computation
             return torch.abs(link_pos).sum(-1) * 1e9
-        dist_mat = torch.linalg.norm(link_pos.unsqueeze(-2) - link_pos.unsqueeze(-3), dim=-1)  # batch_dim x links x links
-
-        # select lower triangular -- distance between link points
-        # lower_indices = torch.tril_indices(dist_mat.shape[-1], dist_mat.shape[-1], offset=-1).unbind()
-        # distances = dist_mat[..., lower_indices[0], lower_indices[1]]  # batch_dim x (links * (links - 1) / 2)
-
-        # select only distances between pairs of specified links
-        distances = dist_mat[..., self.idxs_links_distance_matrix_tuple[0], self.idxs_links_distance_matrix_tuple[1]]
+        # Only the distances between the specified pairs of link points are needed: compute those directly instead of
+        # the full (links x links) distance matrix (same values and gradients). The index tensors are cached on the
+        # device, they used to be rebuilt from python lists on every call.
+        idx = getattr(self, '_pair_idx_cache', None)
+        if idx is None or idx[0].device != link_pos.device:
+            idx = (torch.tensor(self.idxs_links_distance_matrix_tuple[0], dtype=torch.long, device=link_pos.device),
+                   torch.tensor(self.idxs_links_distance_matrix_tuple[1], dtype=torch.long, device=link_pos.device))
+            self._pair_idx_cache = idx
+        distances = torch.linalg.norm(link_pos[..., idx[0], :] - link_pos[..., idx[1], :], dim=-1)
 
         return distances
 

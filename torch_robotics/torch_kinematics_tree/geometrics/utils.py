@@ -8,11 +8,24 @@ DEFAULT_ACOS_BOUND: float = 1.0 - 1e-4
 
 
 @torch.jit.script
+def bmm3(a, b):
+    # Batched small-matrix product as broadcast multiply + sum. For batches of 3x3
+    # matrices this is ~25x faster than torch.bmm, which dispatches large GEMM tiles.
+    return (a.unsqueeze(-1) * b.unsqueeze(-3)).sum(-2)
+
+
+@torch.jit.script
+def bmv3(a, v):
+    # Batched matrix-vector product, same rationale as bmm3.
+    return (a * v.unsqueeze(-2)).sum(-1)
+
+
+@torch.jit.script
 def multiply_transform(w_rot_l, w_trans_l, l_rot_c, l_trans_c):
 
     l_trans_c = l_trans_c.float()
-    w_rot_c = w_rot_l @ l_rot_c
-    w_trans_c = (w_rot_l @ l_trans_c.unsqueeze(-1)).squeeze(-1) + w_trans_l
+    w_rot_c = bmm3(w_rot_l, l_rot_c)
+    w_trans_c = bmv3(w_rot_l, l_trans_c) + w_trans_l
 
     return w_rot_c, w_trans_c
 
@@ -20,10 +33,10 @@ def multiply_transform(w_rot_l, w_trans_l, l_rot_c, l_trans_c):
 @torch.jit.script
 def multiply_inv_transform(l_rot_w, l_trans_w, l_rot_c, l_trans_c):
     w_rot_l = l_rot_w.transpose(-1, -2)
-    w_rot_c = w_rot_l @ l_rot_c
+    w_rot_c = bmm3(w_rot_l, l_rot_c)
 
-    w_trans_l = -(w_rot_l @ l_trans_w.unsqueeze(2)).squeeze(2)
-    w_trans_c = (w_rot_l @ l_trans_c.unsqueeze(-1)).squeeze(-1) + w_trans_l
+    w_trans_l = -bmv3(w_rot_l, l_trans_w)
+    w_trans_c = bmv3(w_rot_l, l_trans_c) + w_trans_l
 
     return w_rot_c, w_trans_c
 
