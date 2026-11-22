@@ -1,0 +1,701 @@
+<?xml version="1.0" ?>
+<robot name="62-6Z-JGSB_urdf" version="1.0">
+   <link name="arm6_base_link">
+      <inertial>
+         <origin xyz="-0.01076 6e-05 0.0175" rpy="0.0 0.0 0.0"/>
+         <mass value="1.23736"/>
+         <inertia ixx="0.0016941596" ixy="7.2609e-07" ixz="0.00028617368" iyy="0.0019487336" iyz="3.08032e-06" izz="0.0025958545"/>
+      </inertial>
+      <visual>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/base_link.stl"/>
+         </geometry>
+         <material name="">
+            <color rgba="0.75294 0.75294 0.75294 1.0"/>
+         </material>
+      </visual>
+      <collision>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/base_link.stl"/>
+         </geometry>
+      </collision>
+   </link>
+   <link name="arm6_link1">
+      <inertial>
+         <origin xyz="0.01454 0.00224 0.07125" rpy="0.0 0.0 0.0"/>
+         <mass value="0.80955"/>
+         <inertia ixx="0.00096572932" ixy="-3.3353e-06" ixz="0.000105959" iyy="0.00091199816" iyz="1.846869e-05" izz="0.00056497516"/>
+      </inertial>
+      <visual>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_1.stl"/>
+         </geometry>
+         <material name="">
+            <color rgba="0.79608 0.82353 0.93725 1.0"/>
+         </material>
+      </visual>
+      <collision>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_1.stl"/>
+         </geometry>
+      </collision>
+   </link>
+   <joint name="arm6_joint1" type="revolute">
+      <origin xyz="0.0 0.0 0.0624999999999988" rpy="0.0 0.0 0.0"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_link1"/>
+      <limit effort="97.0" lower="-1.4" upper="1.4" velocity="6.3"/>
+   </joint>
+   <link name="arm6_link2">
+      <inertial>
+         <origin xyz="0.22993 0.0 -0.00042" rpy="0.0 0.0 0.0"/>
+         <mass value="1.11697"/>
+         <inertia ixx="0.00074504517" ixy="-8.5362e-07" ixz="0.00021445497" iyy="0.012140666" iyz="-9.77e-08" izz="0.012126448"/>
+      </inertial>
+      <visual>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_2.stl"/>
+         </geometry>
+         <material name="">
+            <color rgba="0.75294 0.75294 0.75294 1.0"/>
+         </material>
+      </visual>
+      <collision>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_2.stl"/>
+         </geometry>
+      </collision>
+   </link>
+   <joint name="arm6_joint2" type="revolute">
+      <origin xyz="0.017 0.0 0.06125" rpy="1.57079632679489 0.0 -3.14159265358979"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <parent link="arm6_link1"/>
+      <child link="arm6_link2"/>
+      <limit effort="97.0" lower="-3.0" upper="0.0" velocity="6.3"/>
+   </joint>
+   <link name="arm6_link3">
+      <inertial>
+         <origin xyz="-0.19721 0.05997 -0.00043" rpy="0.0 0.0 0.0"/>
+         <mass value="0.69611"/>
+         <inertia ixx="0.00062556085" ixy="-0.00079286618" ixz="1.865984e-05" iyy="0.0073241532" iyz="-5.57495e-06" izz="0.0073340957"/>
+      </inertial>
+      <visual>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_3.stl"/>
+         </geometry>
+         <material name="">
+            <color rgba="0.75294 0.75294 0.75294 1.0"/>
+         </material>
+      </visual>
+      <collision>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_3.stl"/>
+         </geometry>
+      </collision>
+   </link>
+   <joint name="arm6_joint3" type="revolute">
+      <origin xyz="0.291000000000005 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link3"/>
+      <limit effort="97.0" lower="0.0" upper="3.0" velocity="6.3"/>
+   </joint>
+   <link name="arm6_link4">
+      <inertial>
+         <origin xyz="-0.07002 0.05474 0.00046" rpy="0.0 0.0 0.0"/>
+         <mass value="0.45165"/>
+         <inertia ixx="0.00053517489" ixy="-0.00028098575" ixz="1.352444e-05" iyy="0.00049685234" iyz="-1.097454e-05" izz="0.00074334762"/>
+      </inertial>
+      <visual>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link-4.stl"/>
+         </geometry>
+         <material name="">
+            <color rgba="0.75294 0.75294 0.75294 1.0"/>
+         </material>
+      </visual>
+      <collision>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link-4.stl"/>
+         </geometry>
+      </collision>
+   </link>
+   <joint name="arm6_joint4" type="revolute">
+      <origin xyz="-0.274000000000016 0.0665000000000204 0.0" rpy="0.0 0.0 0.0"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link4"/>
+      <limit effort="7.0" lower="-1.5" upper="1.5" velocity="30.0"/>
+   </joint>
+   <link name="arm6_link5">
+      <inertial>
+         <origin xyz="0.00293 -0.0001 -0.00274" rpy="0.0 0.0 0.0"/>
+         <mass value="0.39344"/>
+         <inertia ixx="0.00021412284" ixy="-2.7367e-07" ixz="-1.504842e-05" iyy="0.00022295095" iyz="-1.7852e-07" izz="0.00016509025"/>
+      </inertial>
+      <visual>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_5.stl"/>
+         </geometry>
+         <material name="">
+            <color rgba="0.75294 0.75294 0.75294 1.0"/>
+         </material>
+      </visual>
+      <collision>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_5.stl"/>
+         </geometry>
+      </collision>
+   </link>
+   <joint name="arm6_joint5" type="revolute">
+      <origin xyz="-0.0829999999999895 0.0 0.0" rpy="-1.5707963267949 0.0 3.14159265358979"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <parent link="arm6_link4"/>
+      <child link="arm6_link5"/>
+      <limit effort="7.0" lower="-1.5" upper="1.5" velocity="30.0"/>
+   </joint>
+   <link name="arm6_link6">
+      <inertial>
+         <origin xyz="-0.00801 -0.0001 0.11" rpy="0.0 0.0 0.0"/>
+         <mass value="0.67014"/>
+         <inertia ixx="0.00092139503" ixy="6.54731e-06" ixz="-0.00012849279" iyy="0.00094221661" iyz="-3.27255e-06" izz="0.00083237726"/>
+      </inertial>
+      <visual>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_6.stl"/>
+         </geometry>
+         <material name="">
+            <color rgba="0.75294 0.75294 0.75294 1.0"/>
+         </material>
+      </visual>
+      <collision>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <geometry>
+            <mesh filename="meshes/link_6.stl"/>
+         </geometry>
+      </collision>
+   </link>
+   <joint name="arm6_joint6" type="revolute">
+      <origin xyz="0.0 0.0 0.0" rpy="0.00660601386089095 -1.5707963267949 3.14159265358979"/>
+      <axis xyz="0.0 0.0 -1.0"/>
+      <parent link="arm6_link5"/>
+      <child link="arm6_link6"/>
+      <limit effort="7.0" lower="-1.88" upper="1.9" velocity="30.0"/>
+   </joint>
+   <link name="arm6_tool0"/>
+   <joint name="arm6_tool0_fixed" type="fixed">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_tool0"/>
+   </joint>
+   <joint name="joint_arm6_base_link_sphere_0" type="fixed">
+      <origin xyz="-0.004082 -0.027096 0.012766" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_0"/>
+   </joint>
+   <link name="arm6_base_link_0">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_1" type="fixed">
+      <origin xyz="0.000103 -0.001019 0.026516" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_1"/>
+   </joint>
+   <link name="arm6_base_link_1">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_2" type="fixed">
+      <origin xyz="-0.001059 0.005083 0.026358" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_2"/>
+   </joint>
+   <link name="arm6_base_link_2">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_3" type="fixed">
+      <origin xyz="0.036773 0.036973 -0.002012" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_3"/>
+   </joint>
+   <link name="arm6_base_link_3">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_4" type="fixed">
+      <origin xyz="-0.070114 -0.041004 -0.002932" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_4"/>
+   </joint>
+   <link name="arm6_base_link_4">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_5" type="fixed">
+      <origin xyz="0.03196 0.063054 -0.003079" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_5"/>
+   </joint>
+   <link name="arm6_base_link_5">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_6" type="fixed">
+      <origin xyz="-0.064282 0.007635 -0.004558" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_6"/>
+   </joint>
+   <link name="arm6_base_link_6">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_7" type="fixed">
+      <origin xyz="-0.094564 -0.011587 -0.006169" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_7"/>
+   </joint>
+   <link name="arm6_base_link_7">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_8" type="fixed">
+      <origin xyz="-0.060937 0.050763 -0.003421" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_8"/>
+   </joint>
+   <link name="arm6_base_link_8">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_9" type="fixed">
+      <origin xyz="0.021332 0.050492 -0.005976" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_9"/>
+   </joint>
+   <link name="arm6_base_link_9">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_10" type="fixed">
+      <origin xyz="-0.031974 0.04877 -0.004642" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_10"/>
+   </joint>
+   <link name="arm6_base_link_10">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_11" type="fixed">
+      <origin xyz="-0.009912 0.064614 -0.002768" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_11"/>
+   </joint>
+   <link name="arm6_base_link_11">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_12" type="fixed">
+      <origin xyz="-0.094256 0.011924 -0.00217" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_12"/>
+   </joint>
+   <link name="arm6_base_link_12">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_13" type="fixed">
+      <origin xyz="-0.034875 -0.064543 -0.003698" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_13"/>
+   </joint>
+   <link name="arm6_base_link_13">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_14" type="fixed">
+      <origin xyz="-0.099362 -0.028985 -0.00304" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_14"/>
+   </joint>
+   <link name="arm6_base_link_14">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_15" type="fixed">
+      <origin xyz="0.017243 0.063418 -0.004495" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_15"/>
+   </joint>
+   <link name="arm6_base_link_15">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_16" type="fixed">
+      <origin xyz="-0.090463 0.036349 -0.001283" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_16"/>
+   </joint>
+   <link name="arm6_base_link_16">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_17" type="fixed">
+      <origin xyz="-0.076295 -0.018358 -0.004266" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_17"/>
+   </joint>
+   <link name="arm6_base_link_17">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_18" type="fixed">
+      <origin xyz="-0.075369 0.056019 -0.004787" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_18"/>
+   </joint>
+   <link name="arm6_base_link_18">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_19" type="fixed">
+      <origin xyz="-0.061416 -0.059874 -0.004911" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_19"/>
+   </joint>
+   <link name="arm6_base_link_19">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_20" type="fixed">
+      <origin xyz="-0.055138 -0.029506 -0.002126" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_20"/>
+   </joint>
+   <link name="arm6_base_link_20">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_base_link_sphere_21" type="fixed">
+      <origin xyz="-0.090133 -0.059377 -0.002718" rpy="0 0 0"/>
+      <parent link="arm6_base_link"/>
+      <child link="arm6_base_link_21"/>
+   </joint>
+   <link name="arm6_base_link_21">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link1_sphere_0" type="fixed">
+      <origin xyz="0.00192 -0.018062 0.020248" rpy="0 0 0"/>
+      <parent link="arm6_link1"/>
+      <child link="arm6_link1_0"/>
+   </joint>
+   <link name="arm6_link1_0">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link1_sphere_1" type="fixed">
+      <origin xyz="0.014312 -0.001247 0.061898" rpy="0 0 0"/>
+      <parent link="arm6_link1"/>
+      <child link="arm6_link1_1"/>
+   </joint>
+   <link name="arm6_link1_1">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link1_sphere_2" type="fixed">
+      <origin xyz="-0.00014 0.025475 0.018094" rpy="0 0 0"/>
+      <parent link="arm6_link1"/>
+      <child link="arm6_link1_2"/>
+   </joint>
+   <link name="arm6_link1_2">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_0" type="fixed">
+      <origin xyz="0.240514 0.000116 -0.002033" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_0"/>
+   </joint>
+   <link name="arm6_link2_0">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_1" type="fixed">
+      <origin xyz="0.299267 0.004513 0.008734" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_1"/>
+   </joint>
+   <link name="arm6_link2_1">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_2" type="fixed">
+      <origin xyz="0.289057 -0.002268 -0.001691" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_2"/>
+   </joint>
+   <link name="arm6_link2_2">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_3" type="fixed">
+      <origin xyz="0.212968 -0.000413 0.002789" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_3"/>
+   </joint>
+   <link name="arm6_link2_3">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_4" type="fixed">
+      <origin xyz="0.113306 0.000976 -0.004376" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_4"/>
+   </joint>
+   <link name="arm6_link2_4">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_5" type="fixed">
+      <origin xyz="-0.001596 0.007404 -0.010478" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_5"/>
+   </joint>
+   <link name="arm6_link2_5">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_6" type="fixed">
+      <origin xyz="0.002885 -0.018821 -0.001603" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_6"/>
+   </joint>
+   <link name="arm6_link2_6">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_7" type="fixed">
+      <origin xyz="0.178816 -5.9e-05 -0.003112" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_7"/>
+   </joint>
+   <link name="arm6_link2_7">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_8" type="fixed">
+      <origin xyz="0.105058 0.008843 0.013923" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_8"/>
+   </joint>
+   <link name="arm6_link2_8">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_9" type="fixed">
+      <origin xyz="0.142519 -6.8e-05 -0.000329" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_9"/>
+   </joint>
+   <link name="arm6_link2_9">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link2_sphere_10" type="fixed">
+      <origin xyz="0.060372 0.000393 -0.002247" rpy="0 0 0"/>
+      <parent link="arm6_link2"/>
+      <child link="arm6_link2_10"/>
+   </joint>
+   <link name="arm6_link2_10">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_0" type="fixed">
+      <origin xyz="-0.270863 0.065824 -0.001419" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_0"/>
+   </joint>
+   <link name="arm6_link3_0">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_1" type="fixed">
+      <origin xyz="-0.229736 0.064902 0.013333" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_1"/>
+   </joint>
+   <link name="arm6_link3_1">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_2" type="fixed">
+      <origin xyz="-0.144485 0.064075 -0.00493" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_2"/>
+   </joint>
+   <link name="arm6_link3_2">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_3" type="fixed">
+      <origin xyz="-0.099331 0.067154 -0.00198" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_3"/>
+   </joint>
+   <link name="arm6_link3_3">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_4" type="fixed">
+      <origin xyz="-0.227128 0.069212 -0.010768" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_4"/>
+   </joint>
+   <link name="arm6_link3_4">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_5" type="fixed">
+      <origin xyz="-0.056605 0.059424 0.015765" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_5"/>
+   </joint>
+   <link name="arm6_link3_5">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_6" type="fixed">
+      <origin xyz="-0.042761 0.043198 -0.031128" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_6"/>
+   </joint>
+   <link name="arm6_link3_6">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_7" type="fixed">
+      <origin xyz="-0.017035 0.010089 0.035891" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_7"/>
+   </joint>
+   <link name="arm6_link3_7">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_8" type="fixed">
+      <origin xyz="-0.184196 0.065611 -0.003681" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_8"/>
+   </joint>
+   <link name="arm6_link3_8">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link3_sphere_9" type="fixed">
+      <origin xyz="-0.010309 -0.001453 -0.037347" rpy="0 0 0"/>
+      <parent link="arm6_link3"/>
+      <child link="arm6_link3_9"/>
+   </joint>
+   <link name="arm6_link3_9">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link4_sphere_0" type="fixed">
+      <origin xyz="-0.079905 0.071602 0.000742" rpy="0 0 0"/>
+      <parent link="arm6_link4"/>
+      <child link="arm6_link4_0"/>
+   </joint>
+   <link name="arm6_link4_0">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link4_sphere_1" type="fixed">
+      <origin xyz="-0.026301 0.00476 -0.019794" rpy="0 0 0"/>
+      <parent link="arm6_link4"/>
+      <child link="arm6_link4_1"/>
+   </joint>
+   <link name="arm6_link4_1">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link4_sphere_2" type="fixed">
+      <origin xyz="-0.034576 0.003124 0.029548" rpy="0 0 0"/>
+      <parent link="arm6_link4"/>
+      <child link="arm6_link4_2"/>
+   </joint>
+   <link name="arm6_link4_2">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link4_sphere_3" type="fixed">
+      <origin xyz="-0.000349 1.5e-05 0.030849" rpy="0 0 0"/>
+      <parent link="arm6_link4"/>
+      <child link="arm6_link4_3"/>
+   </joint>
+   <link name="arm6_link4_3">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link4_sphere_4" type="fixed">
+      <origin xyz="-0.042331 0.040177 0.009275" rpy="0 0 0"/>
+      <parent link="arm6_link4"/>
+      <child link="arm6_link4_4"/>
+   </joint>
+   <link name="arm6_link4_4">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link5_sphere_0" type="fixed">
+      <origin xyz="0.002177 0.00093 0.001157" rpy="0 0 0"/>
+      <parent link="arm6_link5"/>
+      <child link="arm6_link5_0"/>
+   </joint>
+   <link name="arm6_link5_0">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link5_sphere_1" type="fixed">
+      <origin xyz="0.003023 -0.00073 -0.023144" rpy="0 0 0"/>
+      <parent link="arm6_link5"/>
+      <child link="arm6_link5_1"/>
+   </joint>
+   <link name="arm6_link5_1">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link5_sphere_2" type="fixed">
+      <origin xyz="-0.030622 4e-06 0.03833" rpy="0 0 0"/>
+      <parent link="arm6_link5"/>
+      <child link="arm6_link5_2"/>
+   </joint>
+   <link name="arm6_link5_2">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link6_sphere_0" type="fixed">
+      <origin xyz="-0.001423 -0.000237 0.050252" rpy="0 0 0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_link6_0"/>
+   </joint>
+   <link name="arm6_link6_0">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link6_sphere_1" type="fixed">
+      <origin xyz="-0.00042 -0.073807 0.103543" rpy="0 0 0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_link6_1"/>
+   </joint>
+   <link name="arm6_link6_1">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link6_sphere_2" type="fixed">
+      <origin xyz="-0.004798 -0.010809 0.105958" rpy="0 0 0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_link6_2"/>
+   </joint>
+   <link name="arm6_link6_2">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link6_sphere_3" type="fixed">
+      <origin xyz="0.002267 0.005456 0.105713" rpy="0 0 0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_link6_3"/>
+   </joint>
+   <link name="arm6_link6_3">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link6_sphere_4" type="fixed">
+      <origin xyz="-0.052362 0.001557 0.091653" rpy="0 0 0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_link6_4"/>
+   </joint>
+   <link name="arm6_link6_4">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link6_sphere_5" type="fixed">
+      <origin xyz="-0.079937 -0.001149 0.107601" rpy="0 0 0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_link6_5"/>
+   </joint>
+   <link name="arm6_link6_5">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link6_sphere_6" type="fixed">
+      <origin xyz="0.001776 0.002769 0.163913" rpy="0 0 0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_link6_6"/>
+   </joint>
+   <link name="arm6_link6_6">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+   <joint name="joint_arm6_link6_sphere_7" type="fixed">
+      <origin xyz="0.000789 0.073043 0.105464" rpy="0 0 0"/>
+      <parent link="arm6_link6"/>
+      <child link="arm6_link6_7"/>
+   </joint>
+   <link name="arm6_link6_7">
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </link>
+</robot>

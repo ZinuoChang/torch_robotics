@@ -180,3 +180,58 @@ class Differentiable2LinkPlanar(DifferentiableTree):
         self.model_path = robot_file.as_posix()
         self.name = "differentiable_2_link_planar"
         super().__init__(self.model_path, self.name, link_list=link_list, device=device)
+
+
+def modify_urdf_add_sphere_links(robot_file, spheres):
+    """Append one fixed child link per collision sphere (named ``<link>_<i>``) to a URDF.
+
+    Args:
+        robot_file: Path of the source URDF.
+        spheres: ``{link_name: [[x, y, z, radius], ...]}`` in the link frame.
+
+    Returns:
+        (path of the written ``*_collision_model.urdf``, sphere link names, sphere radii)
+    """
+    robot_urdf = URDF.from_xml_file(robot_file)
+    link_collision_names = []
+    link_collision_margins = []
+    for link_name, spheres_l in spheres.items():
+        for i, sphere in enumerate(spheres_l):
+            link_collision = f'{link_name}_{i}'
+            robot_urdf.add_joint(Joint(
+                name=f'joint_{link_name}_sphere_{i}', parent=link_name, child=link_collision,
+                joint_type='fixed', origin=Pose(xyz=[float(v) for v in sphere[:3]])
+            ))
+            robot_urdf.add_link(Link(name=link_collision, origin=Pose(xyz=[0., 0., 0.], rpy=[0., 0., 0.])))
+            link_collision_names.append(link_collision)
+            link_collision_margins.append(float(sphere[3]))
+
+    robot_file = Path(str(robot_file).replace('.urdf', '_collision_model.urdf'))
+    xmlstr = minidom.parseString(ET.tostring(robot_urdf.to_xml())).toprettyxml(indent="   ")
+    with open(str(robot_file), "w") as f:
+        f.write(xmlstr)
+    return robot_file, link_collision_names, link_collision_margins
+
+
+class DifferentiableGimXL(DifferentiableTree):
+    """GIM XL 6-DoF arm (nominal CAD URDF of the hardware bundle, 2026-11-17).
+
+    Collision spheres come from ``data/configs/gim_xl/gim_xl_sphere_config.yaml``, exported from
+    the cuRobo sphere fit, so torch_robotics and cuRobo share one collision model.
+    """
+    sphere_config = 'gim_xl/gim_xl_sphere_config.yaml'
+
+    def __init__(self, link_list: Optional[str] = None, device='cpu', use_collision_spheres=True):
+        robot_file = get_robot_path() / 'gim_xl_description' / 'gim_arm_xl_6dof.urdf'
+        with open((get_configs_path() / self.sphere_config).as_posix()) as file:
+            self.collision_config = yaml.safe_load(file)
+        self.spheres = self.collision_config['spheres']
+        self.self_collision_pairs = self.collision_config['self_collision_pairs']
+
+        if use_collision_spheres:
+            robot_file, self.link_collision_names, self.link_collision_margins = \
+                modify_urdf_add_sphere_links(robot_file, self.spheres)
+
+        self.model_path = robot_file.as_posix()
+        self.name = "differentiable_gim_xl"
+        super().__init__(self.model_path, self.name, link_list=link_list, device=device)
